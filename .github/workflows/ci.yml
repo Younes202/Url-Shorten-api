@@ -1,15 +1,12 @@
-name: Continuous Integration
+name: Run FastAPI Application
 
 on:
   push:
     branches:
-      - master
-  pull_request:
-    branches:
-      - master
+      - main
 
 jobs:
-  build:
+  run_app:
     runs-on: ubuntu-latest
     
     steps:
@@ -31,8 +28,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
-      - name: Run linting
+      - name: Run FastAPI application
         run: |
-          # Add linting commands here (e.g., flake8, pylint)
-
-      # Add additional steps as needed
+          uvicorn app.main:app --host 0.0.0.0 --port 8000
+      
+      # Add steps to display or capture results, such as using GitHub Actions' logging capabilities or uploading artifacts.
