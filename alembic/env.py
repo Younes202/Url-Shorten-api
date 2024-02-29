@@ -1,13 +1,28 @@
 import os
 import sys
+from dotenv import load_dotenv
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
 # Add the path of your app to the sys.path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
+# Load environment variables from .env file
+load_dotenv()
+
+
+def get_sqlalchemy_url():
+    db_url = os.getenv("DATABASE_URL")
+    if not db_url:
+        raise ValueError("DATABASE_URL environment variable is not set.")
+    return db_url
+
+
+# Set sqlalchemy.url using the function
+sqlalchemy_url = get_sqlalchemy_url()
+
 # Import the necessary modules from your app
-from app.database import Base
+from app.models import Base
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -43,7 +58,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url=config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -81,3 +96,4 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+print("DATABASE_URL:", config.get_main_option("sqlalchemy.url"))

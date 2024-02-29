@@ -1,5 +1,8 @@
-from database import Base
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+
+# Base class for models
+Base = declarative_base()
 
 
 class ShortenedUrl(Base):
