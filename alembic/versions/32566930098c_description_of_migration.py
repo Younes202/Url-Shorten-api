@@ -1,7 +1,7 @@
 """Description of migration
 
 Revision ID: 32566930098c
-Revises: 
+Revises:
 Create Date: 2024-02-29 15:52:31.448230
 
 """

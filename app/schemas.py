@@ -1,26 +1,17 @@
-from pydantic import BaseModel
-from typing import Dict
+from pydantic import BaseModel, HttpUrl
 
 
-class ShortenURLRequest(BaseModel):
-    long_url: str
+class ShortenedUrlCreate(BaseModel):
+    original_url: HttpUrl
 
 
-class ShortenURLResponse(BaseModel):
-    short_url: str
+class ShortenedUrlResponse(BaseModel):
+    id: int
+    original_url: HttpUrl
+    short_link: str
 
 
-class CustomURLRequest(BaseModel):
-    long_url: str
-    custom_short_url: str
-
-
-class CustomURLResponse(BaseModel):
-    message: str
-
-
-class AnalyticsResponse(BaseModel):
-    short_url: str
-    clicks: int
-    referrers: Dict[str, int]
-    user_agents: Dict[str, int]
+class User(BaseModel):
+    id: int
+    name: str
+    role: str
