@@ -12,10 +12,4 @@ class ShortenedUrlResponse(BaseModel):
 
 
 class ShortLinkResponse(BaseModel):
-    short_link: HttpUrl
-
-
-class User(BaseModel):
-    id: int
-    name: str
-    role: str
+    short_link: str

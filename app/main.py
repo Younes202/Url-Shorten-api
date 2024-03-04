@@ -6,21 +6,26 @@ from sqlalchemy.orm import Session
 from .database import get_db
 from .models import ShortenedUrl
 from .utils import create_short_link
+from sqlalchemy.exc import IntegrityError
+from .exceptions import UrlAlreadyExistsException, InternalBackendError
 app = FastAPI()
 
 
 @app.post("/urls/", response_model=ShortLinkResponse)
 def create_shortened_url(url_data: ShortenedUrlCreate, db: Session = Depends(get_db)):
-    # Check if the original URL is already in the database
-    timestamp = datetime.now().replace(tzinfo=timezone.utc).timestamp()
-    short_link = create_short_link(url_data, timestamp)
-    # Create a new shortened URL
-    new_url = ShortenedUrl(original_url=str(url_data.original_url), short_link=short_link)
-    db.add(new_url)
-    db.commit()
-    db.refresh(new_url)
-    return ShortLinkResponse(short_link=short_link)
-    # return ShortenedUrlResponse(id=new_url.id, original_url=new_url.original_url, short_link=new_url.short_link)
+    try:
+        timestamp = datetime.now().replace(tzinfo=timezone.utc).timestamp()
+        short_link = create_short_link(url_data.original_url, timestamp)
+        new_url = ShortenedUrl(original_url=str(url_data.original_url), short_link=short_link, short_link=short_link)
+        db.add(new_url)
+        db.commit()
+        db.refresh(new_url)
+        return ShortLinkResponse(short_link=short_link)
+    except IntegrityError as e:
+        if "duplicate key value" in str(e.orig):
+            raise UrlAlreadyExistsException()
+        else:
+            raise InternalBackendError()
 
 
 @app.get("/{short_link}")

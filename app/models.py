@@ -9,5 +9,5 @@ class ShortenedUrl(Base):
     __tablename__ = "shortened_urls"
 
     id = Column(Integer, primary_key=True)
-    original_url = Column(String(255))
+    original_url = Column(String(255), unique=True)
     short_link = Column(String(7), unique=True, index=True)
