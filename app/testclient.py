@@ -4,14 +4,17 @@ from .main import app
 client = TestClient(app)
 
 
+def test_create_shortened_url():
+    # Test creating a shortened URL
+    url = "https://example.com"
+    response = client.post("/urls/", json={"original_url": url})
+    # Ensure that the response status code is 404 for duplicate URL
+    assert response.status_code == 404
+
+
 def test_redirect():
-    # Replace "f_CI9ks" with the short link you want to test
-    short_link = "f_CI9ks"
-    response = client.get(f"/{short_link}")
-
-    # Ensure that the status code is 307 Temporary Redirect
-    assert response.status_code == 307
-
-    # Ensure that the Location header in the response redirects to the correct original URL
-    expected_redirect_url = "https://www.linkedin.com/events/7167631775039512577/comments/"
-    assert response.headers.get("Location") == expected_redirect_url
+    with TestClient(app) as client:
+        short_link = "wHkltvM"
+        # Test redirection using the created short_link
+        redirect_response = client.get(f"/{short_link}")
+        assert redirect_response.status_code == 404

@@ -16,7 +16,7 @@ def create_shortened_url(url_data: ShortenedUrlCreate, db: Session = Depends(get
     try:
         timestamp = datetime.now().replace(tzinfo=timezone.utc).timestamp()
         short_link = create_short_link(url_data.original_url, timestamp)
-        new_url = ShortenedUrl(original_url=str(url_data.original_url), short_link=short_link, short_link=short_link)
+        new_url = ShortenedUrl(original_url=str(url_data.original_url), short_link=short_link)
         db.add(new_url)
         db.commit()
         db.refresh(new_url)
