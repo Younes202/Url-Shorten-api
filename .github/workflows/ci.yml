@@ -27,7 +27,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+      - name : run linting
+        run: |
+          flake8
       - name: Run FastAPI application
         run: |
           uvicorn app.main:app --host 0.0.0.0 --port 8000
@@ -35,3 +37,4 @@ jobs:
       - name: Run tests
         run : |
           pytest app/testclient.py
+      
