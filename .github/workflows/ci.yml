@@ -30,11 +30,17 @@ jobs:
           pip install -r requirements.txt
 
       - name: Start PostgreSQL
-        run: docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+        run: |
+          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+          # Wait for PostgreSQL to initialize
+          sleep 10
 
       - name: Run database migrations
         run: alembic upgrade head
 
       - name: Run FastAPI application
         run: |
+          # Start FastAPI application after database migrations
           uvicorn app.main:app --host 0.0.0.0 --port 8000
+        # Wait for the application to start
+        timeout-minutes: 2
