@@ -52,5 +52,6 @@ jobs:
       - name: Run FastAPI application
         run: |
           # Set up environment variables for database connection
-          export DATABASE_URL=postgresql://${{ env.DB_USERNAME }}:@${{ env.DB_HOST }}:${{ env.DB_PORT }}/${{ env.DB_NAME }}
+          # Set up environment variables for database connection
+          export DATABASE_URL="postgresql://${{ secrets.DB_USERNAME }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}"
           uvicorn app.main:app --host 0.0.0.0 --port 8000
