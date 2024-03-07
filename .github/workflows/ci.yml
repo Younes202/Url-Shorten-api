@@ -31,16 +31,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Start PostgreSQL
-        uses: docker://postgres:latest
-        with:
-          env:
-          POSTGRES_DB: shorteer_url_api
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+        run: docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
 
       - name: Run database migrations
         run: alembic upgrade head
-        
+
       - name: Run FastAPI application
         run: |
           uvicorn app.main:app --host 0.0.0.0 --port 8000
