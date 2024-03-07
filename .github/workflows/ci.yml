@@ -31,7 +31,7 @@ jobs:
 
       - name: Start PostgreSQL
         run: |
-          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
           # Wait for PostgreSQL to initialize
           sleep 10
 
