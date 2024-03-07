@@ -10,14 +10,14 @@ on:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
+      
     env:
       DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
 
-    runs-on: ubuntu-latest
-      
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -30,10 +30,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Start PostgreSQL
+        uses: docker://postgres:latest
+        with:
+          env:
+          POSTGRES_DB: shorteer_url_api
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
       - name: Run database migrations
         run: alembic upgrade head
         
       - name: Run FastAPI application
         run: |
-          # Run FastAPI application using uvicorn
           uvicorn app.main:app --host 0.0.0.0 --port 8000
