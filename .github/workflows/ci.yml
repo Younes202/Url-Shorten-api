@@ -19,24 +19,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: |
           sudo apt-get --yes install gcc python3-dev libpq-dev
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run database migrations
         run: alembic upgrade head
         
       - name: Run FastAPI application
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          # Set up environment variables for database connection
-          export DATABASE_URL= ${{secrets.DATABASE_URL}}
+          # Run FastAPI application using uvicorn
           uvicorn app.main:app --host 0.0.0.0 --port 8000
