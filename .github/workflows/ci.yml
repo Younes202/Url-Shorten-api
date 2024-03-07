@@ -36,7 +36,7 @@ jobs:
           sleep 10
 
       - name: Run database migrations
-        run: alembic upgrade head
+        run: alembic -x DATABASE_URL=$DATABASE_URL upgrade head
 
       - name: Run FastAPI application
         run: |
