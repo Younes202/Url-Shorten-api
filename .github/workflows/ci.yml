@@ -25,7 +25,6 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        working-directory: ./URL_SHORTENER_SERVICE
         run: |
           sudo apt-get --yes install gcc python3-dev libpq-dev
           pip install --upgrade pip
@@ -33,12 +32,11 @@ jobs:
 
       - name: Run database migrations
         run: alembic upgrade head
-        working-directory: ./URL_SHORTENER_SERVICE
+        
+      - name: Run FastAPI application
         env:
-          PYTHONPATH: ${{ github.workspace }}/URL_SHORTENER_SERVICE
-
-      - name: Test
-        run: pytest
-        working-directory: ./URL_SHORTENER_SERVICE
-        env:
-          PYTHONPATH: ${{ github.workspace }}/URL_SHORTENER_SERVICE
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Set up environment variables for database connection
+          export DATABASE_URL= ${{secrets.DATABASE_URL}}
+          uvicorn app.main:app --host 0.0.0.0 --port 8000
