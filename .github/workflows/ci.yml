@@ -14,19 +14,7 @@ jobs:
       DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
 
     runs-on: ubuntu-latest
-    services:
-      testdb:
-        image: postgres:15.3-bullseye
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_DB: shorteer_url_api
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,7 +25,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        working-directory: ./src
+        working-directory: ./URL_SHORTENER_SERVICE
         run: |
           sudo apt-get --yes install gcc python3-dev libpq-dev
           pip install --upgrade pip
