@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
       
     env:
-      DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shorteer_url_api
 
     steps:
       - name: Checkout code
