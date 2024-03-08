@@ -30,15 +30,17 @@ jobs:
           # Wait for PostgreSQL to initialize
           sleep 10
 
+      - name: Activate virtual environment
+        run: source venv/bin/activate
+      
       - name: Run database migrations
         run:
           source venv/bin/activate
           alembic upgrade head
-          
+
       - name: Run FastAPI application
         run: |
           # Start FastAPI application after database migrations
-          source venv/bin/activate
           uvicorn app.main:app --host 0.0.0.0 --port 8010
         # Wait for the application to start
         timeout-minutes: 2
