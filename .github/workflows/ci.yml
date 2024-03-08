@@ -45,5 +45,4 @@ jobs:
           # Start FastAPI application after database migrations
           venv/bin/python venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8010
         # Wait for the application to start
-        timeout-minutes: 2
 
