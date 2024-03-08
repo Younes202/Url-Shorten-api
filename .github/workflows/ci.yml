@@ -31,14 +31,12 @@ jobs:
           sleep 10
 
       - name: Run database migrations
-        run:
-          source venv/bin/activate
-          alembic upgrade head
+        run: |
+          source venv/bin/activate && alembic upgrade head
           
       - name: Run FastAPI application
         run: |
-          # Start FastAPI application after database migrations
-          source venv/bin/activate
-          uvicorn app.main:app --host 0.0.0.0 --port 8000
+          # Activate virtual environment and start FastAPI application after database migrations
+          source venv/bin/activate && uvicorn app.main:app --host 0.0.0.0 --port 8000
         # Wait for the application to start
         timeout-minutes: 2
