@@ -40,8 +40,7 @@ jobs:
 
       - name: Run database migrations
         run: |
-          alembic upgrade head
-
+          /home/runner/.local/bin/alembic upgrade head
 
       - name: Run FastAPI application
         run: |
