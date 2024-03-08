@@ -38,6 +38,9 @@ jobs:
           # Wait for PostgreSQL to initialize
           sleep 10
 
+      - name: Check Alembic Executable
+        run: ls ~/.local/bin/
+        
       - name: Run database migrations
         run: |
           ~/.local/bin/alembic upgrade head
