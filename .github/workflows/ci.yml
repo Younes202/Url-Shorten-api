@@ -27,10 +27,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Activate venv
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          source venv/bin/activate
 
       - name: Start PostgreSQL
         run: |
@@ -38,10 +37,6 @@ jobs:
           # Wait for PostgreSQL to initialize
           sleep 10
 
-      - name: Install Alembic
-        run: pip install alembic
-        
-        
       - name: Run database migrations
         run: alembic upgrade head
           
