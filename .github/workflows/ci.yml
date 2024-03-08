@@ -38,12 +38,12 @@ jobs:
           # Wait for PostgreSQL to initialize
           sleep 10
 
-      - name: Check Alembic Executable
-        run: ls ~/.local/bin/
+      - name: Install Alembic
+        run: pip install alembic
+        
         
       - name: Run database migrations
-        run: |
-          ~/.local/bin/alembic upgrade head
+        run: alembic upgrade head
           
       - name: Run FastAPI application
         run: |
