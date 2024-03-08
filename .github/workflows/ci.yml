@@ -37,11 +37,11 @@ jobs:
         run:
           source venv/bin/activate
           alembic upgrade head
-
+      
       - name: Run FastAPI application
         run: |
           # Start FastAPI application after database migrations
-          venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8010
+          venv/bin/python venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8010
         # Wait for the application to start
         timeout-minutes: 2
-        
+
