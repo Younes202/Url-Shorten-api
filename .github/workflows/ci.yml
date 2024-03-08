@@ -15,6 +15,13 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,12 +35,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Start PostgreSQL
-        run: |
-          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
-          # Wait for PostgreSQL to initialize
-          sleep 10
 
       - name: Run database migrations
         run: alembic upgrade head
