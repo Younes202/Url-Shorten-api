@@ -39,9 +39,9 @@ jobs:
           sleep 10
 
       - name: Run database migrations
-        run:
-          pip install alembic
+        run: |
           ~/.local/bin/alembic upgrade head
+        
 
       - name: Run FastAPI application
         run: |
