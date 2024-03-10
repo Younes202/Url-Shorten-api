@@ -42,3 +42,7 @@ jobs:
       - name: Run database migrations
         run: |
           alembic upgrade head
+
+      - name : Run tests
+        run: |
+          pytest app/testclient.py
