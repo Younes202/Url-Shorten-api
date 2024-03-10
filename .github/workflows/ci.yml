@@ -23,14 +23,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-
-      - name: Check Docker Version
-        run: docker --version
-
       - name: Start PostgreSQL
         run: |
           docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
