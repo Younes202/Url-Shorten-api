@@ -18,21 +18,11 @@ jobs:
 
       - name: Start PostgreSQL
         run: |
-          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
+          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:latest
           # Wait for PostgreSQL to initialize (increase sleep time if needed)
           sleep 10
           # Check container logs for debugging
           docker logs postgres
-
-      - name: Modify pg_hba.conf
-        run: |
-          docker exec postgres sed -i "s/md5/trust/g" /var/lib/postgresql/data/pg_hba.conf
-          docker restart postgres
-
-      - name: Verify Connection
-        run: |
-          # Test database connection
-          docker exec postgres psql -U postgres shorteer_url_api -c "SELECT 1" || exit 1
 
       - name: Checkout code
         uses: actions/checkout@v2
