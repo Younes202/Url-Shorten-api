@@ -9,11 +9,24 @@ on:
       - master
 
 jobs:
-  test:
+  setup_postgres:
     runs-on: ubuntu-latest
 
     env:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    steps:
+      - name: Set up PostgreSQL
+        uses: docker://postgres:latest
+        with:
+          env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: shorteer_url_api
+
+  run_migrations:
+    needs: setup_postgres
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -28,14 +41,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Set up PostgreSQL
-        uses: docker://postgres:latest
-        with:
-          env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: shorteer_url_api
 
       - name: Run database migrations
         run: |
