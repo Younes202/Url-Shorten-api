@@ -11,16 +11,17 @@ on:
 jobs:
   test:
     env:
-      DATABASE_URL: postgresql://postgres:younes12@localhost:5432/shorteer_url_api
+      DATABASE_URL: postgresql://postgres:your_password_here@localhost:5432/shorteer_url_api
+      POSTGRES_PASSWORD: your_password_here  # Add the password here
     runs-on: ubuntu-latest
 
     services:
       postgres:
-        image: postgres:13  # Specify the desired PostgreSQL version
+        image: postgres:latest
         env:
           POSTGRES_DB: shorteer_url_api
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: younes12
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
