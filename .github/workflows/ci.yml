@@ -10,6 +10,8 @@ on:
 
 jobs:
   test:
+    env:
+      DATABASE_URL: postgresql://postgres@localhost/shorteer_url_api
     runs-on: ubuntu-latest
 
     steps:
