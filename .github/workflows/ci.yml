@@ -29,7 +29,8 @@ jobs:
       - name: Verify Connection
         run: |
           # Test database connection
-          docker exec -it postgres psql -U postgres shorteer_url_api -c "SELECT 1"
+          docker exec -it -e PGPASSWORD=postgres postgres psql -U postgres shorteer_url_api -c "SELECT 1"
+        
 
       - name: Checkout code
         uses: actions/checkout@v2
