@@ -33,9 +33,9 @@ jobs:
         uses: docker://postgres:latest
         with:
           env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: shorteer_url_api
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+            POSTGRES_DB: shorteer_url_api
 
       - name: Run database migrations
         run: |
