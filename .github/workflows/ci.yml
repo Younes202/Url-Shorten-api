@@ -11,16 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: shorteer_url_api
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shorteer_url_api
 
     steps:
       - name: Checkout code
@@ -31,20 +23,27 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+
+      - name: Check Docker Version
+        run: docker --version
+
+      - name: Start PostgreSQL
+        run: |
+          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+          sleep 10
+          docker logs postgres
+
+      - name: Verify Connection
+        run: docker exec postgres psql -U postgres shorteer_url_api -c "SELECT 1" || exit 1
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Wait for PostgreSQL to initialize
-        run: |
-          sleep 10
-          docker ps -a
-          docker logs postgres
-
-      - name: Verify PostgreSQL Connection
-        run: |
-          docker exec postgres psql -U postgres shorteer_url_api -c "SELECT 1" || exit 1
 
       - name: Run database migrations
         run: |
