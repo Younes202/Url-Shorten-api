@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     env:
-      DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: |
           docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
           # Wait for PostgreSQL to initialize
-          sleep 5
+          sleep 10
 
       - name: Install dependencies
         run: |
@@ -41,4 +41,3 @@ jobs:
       - name: Run database migrations
         run:
           alembic upgrade head
-
