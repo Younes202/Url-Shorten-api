@@ -4,49 +4,34 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Docker Version
-        run: docker --version
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Start PostgreSQL
-        run: |
-          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
-          # Wait for PostgreSQL to initialize
-          sleep 10
-
-      - name: Activate virtual environment
-        run: source venv/bin/activate
-      
-      - name: Run database migrations
-        run:
-          source venv/bin/activate
-          alembic upgrade head
-      
-      - name: Run FastAPI application
+    - name: Set up PostgreSQL
+      uses: docker://postgres:latest
+      with:
         env:
-          DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
-        run:
-          # Start FastAPI application after database migrations
-          venv/bin/python venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 9000 &> app.log &
-          tail -f app.log  # Monitor log for startup and errors (optional)
-        # Wait for the application to start
+        POSTGRES_USER: postgres
+        POSTGRES_DB: shorteer_url_api
 
+    - name: Run Alembic migrations
+      run: |
+        DATABASE_URL=postgresql://postgres@localhost:5432/shorteer_url_api alembic upgrade head
 
-
-
+    
