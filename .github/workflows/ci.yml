@@ -9,40 +9,33 @@ on:
       - master
 
 jobs:
-  test:
-    env:
-      DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
+  build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Docker Version
-        run: docker --version
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
-      - name: Start PostgreSQL
-        run: |
-          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
-          # Wait for PostgreSQL to initialize
-          sleep 10
+    - name: Set up PostgreSQL
+      uses: docker://postgres:latest
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: shorteer_url_api
 
-      - name: Install dependencies
-        working-directory: ./
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Run database migrations
+      run: alembic upgrade head
 
-  
-      - name: Run database migrations
-        working-directory: ./
-        env:
-          PYTHONPATH: ${{ github.workspace }}/
-        run:
-          alembic upgrade head
+
+    - name: Tear down PostgreSQL
+      run: docker stop postgres
 
