@@ -2,44 +2,45 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: shorteer_url_api
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Check Docker Version
+        run: docker --version
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Run database migrations
-      run: |
-        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/shorteer_url_api"
-        alembic upgrade head
+      - name: Start PostgreSQL
+        run: |
+          docker run --name postgres -p 5432:5432 -e POSTGRES_DB=shorteer_url_api -e POSTGRES_USER=postgres -d postgres:latest
+          # Wait for PostgreSQL to initialize
+          sleep 10
 
-    - name: Run tests
-      run: |
-        pytest
+      - name: Install dependencies
+        working-directory: ./
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+  
+      - name: Run database migrations
+        working-directory: ./
+        env:
+          PYTHONPATH: ${{ github.workspace }}/
+        run:
+          alembic upgrade head
+
