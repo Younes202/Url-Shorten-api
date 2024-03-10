@@ -12,6 +12,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,9 +34,9 @@ jobs:
         with:
           env:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: shorteer_url_api
 
       - name: Run database migrations
         run: |
           alembic upgrade head
-
