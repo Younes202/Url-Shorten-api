@@ -2,24 +2,24 @@ name: CI
 
 on:
   push:
-    branches: [ master ]  # Change to your branch(es) if needed
+    branches: [ master ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Adjust OS as needed
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3  # Checkout your code
+      - uses: actions/checkout@v3
 
       - name: Set up Python environment
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'  # Specify your desired Python version
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install requirements.txt  # Replace with your requirements file
+          python3 -m pip install --upgrade pip
+          pip install requirements.txt
 
       - name: Run migrations
         env:
