@@ -37,6 +37,7 @@ jobs:
 
       - name: Run database migrations
         env:
-          DATABASE_URL: postgresql://postgres@localhost:5432/shorteer_url_api
+          POSTGRES_DB: shorteer_url_api
+          POSTGRES_USER: postgres
         run: |
           alembic upgrade head
