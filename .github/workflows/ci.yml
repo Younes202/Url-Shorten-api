@@ -16,6 +16,7 @@ jobs:
         env:
           POSTGRES_DB: shorteer_url_api
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -29,16 +30,14 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Set up environment variables
-      run: |
-        echo "DATABASE_URL=postgresql://postgres@localhost:5432/shorteer_url_api" >> $GITHUB_ENV
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Run database migrations
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shorteer_url_api
       run: |
         alembic upgrade head
 
