@@ -3,11 +3,21 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: shorteer_url_api
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - name: Checkout code
@@ -23,15 +33,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up PostgreSQL
-      uses: docker://postgres:latest
-      with:
-        env:
-        POSTGRES_USER: postgres
-        POSTGRES_DB: shorteer_url_api
-
     - name: Run Alembic migrations
       run: |
-        DATABASE_URL=postgresql://postgres@localhost:5432/shorteer_url_api alembic upgrade head
+        alembic upgrade head
 
-    
+    - name: Run tests
+      run: |
+        pytest tests/
