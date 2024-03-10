@@ -6,7 +6,7 @@ client = TestClient(app)
 
 def test_create_shortened_url():
     # Test creating a shortened URL
-    url = "https://example.com"
+    url = "https://exmp.com"
     response = client.post("/urls/", json={"original_url": url})
     # Ensure that the response status code is 201 for successful creation
     assert response.status_code == 201
