@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from .schemas import ShortenedUrlCreate, ShortLinkResponse
 from sqlalchemy.orm import Session
 from .database import get_db
-from .models import ShortenedUrl
+from app.models import ShortenedUrl
 from .utils import create_short_link
 from sqlalchemy.exc import IntegrityError
 from .exceptions import UrlAlreadyExistsException, InternalBackendError
@@ -29,12 +29,10 @@ def create_shortened_url(url_data: ShortenedUrlCreate, db: Session = Depends(get
 
 
 @app.get("/{short_link}")
-def redirect(short_link: str, db: Session = Depends(get_db)):
-    obj = db.query(ShortenedUrl).filter_by(short_link=short_link).first()
+def redirect(short_ln: str, db: Session = Depends(get_db)):
+    obj = db.query(ShortenedUrl).filter_by(short_link=short_ln).first()
     if obj is None:
         raise HTTPException(
             status_code=404, detail="The link does not exist, could not redirect."
         )
-    return RedirectResponse(url=obj.original_url)
-
-
+    return ShortLinkResponse(short_link=obj.original_url)
